@@ -1,4 +1,4 @@
-
+-----------------disk io-------------------------------------------------------------
 if exists (
 	 select * from DBA_ROHIT.sys.tables
 		where name = 'diskioinfo'
@@ -29,8 +29,8 @@ SELECT ----- step 1
 		LEFT ([mf].[physical_name], 2) AS [Drive],
 		DB_NAME ([vfs].[database_id]) AS [DB],
 		[mf].[physical_name]
-		--into DBA_ROHIT.dbo.diskioinfo
-		into #tempdiskio ----- temp data --- step2
+
+		into #tempdiskio ----- temp data
 		FROM
 		sys.dm_io_virtual_file_stats (NULL,NULL) AS [vfs]
 		JOIN sys.master_files AS [mf]
@@ -53,29 +53,23 @@ SELECT ----- step 1
 			  @body = 'DISKlatency_issue',
 			  @subject = 'DISKlatency_issue'  
   
-			  insert into DBA_ROHIT.dbo.diskioinfo select * from #tempdiskio --- step4
+			  insert into DBA_ROHIT.dbo.diskioinfo select * from #tempdiskio 
 			  drop table #tempdiskio --- step3
 
-		end
+		END
 	
-	else 
+	ELSE 
 		begin
-			insert into DBA_ROHIT.dbo.diskioinfo select * from #tempdiskio --- step5
-			drop table #tempdiskio --- step3
+			insert into DBA_ROHIT.dbo.diskioinfo select * from #tempdiskio 
+			drop table #tempdiskio 
 
-	   end
+	   END
 END
 
 ELSE
 
-
-if not exists (
-	 select * from DBA_ROHIT.sys.tables
-		where name = 'diskioinfo'
-	 )
-
 begin 
-----script
+----script---------------
     
 	SELECT ----- step 1
 		[ReadLatency] =
@@ -101,8 +95,7 @@ begin
 		LEFT ([mf].[physical_name], 2) AS [Drive],
 		DB_NAME ([vfs].[database_id]) AS [DB],
 		[mf].[physical_name]
-		--into DBA_ROHIT.dbo.diskioinfo
-		into #tempdiskio2 ----- temp data --- step2
+		into #tempdiskio2 
 		FROM
 		sys.dm_io_virtual_file_stats (NULL,NULL) AS [vfs]
 		JOIN sys.master_files AS [mf]
@@ -113,12 +106,11 @@ begin
 		-- ORDER BY [ReadLatency] DESC
 		ORDER BY [WriteLatency] DESC;
 		
---select * from #tempdiskio
-	if exists ------step3
+	if exists
 		( select * from #tempdiskio2 where ReadLatency > 20 or WriteLatency >20 
 			)
 		begin
-			--email script ---- ste
+			--email script ----
 			EXEC msdb.dbo.sp_send_dbmail
 			  @profile_name = 'IBMdba',
 			  @recipients = 'adnaik.rohit@gmail.com',
@@ -126,14 +118,15 @@ begin
 			  @subject = 'DISKlatency_issue'  
   
 			  
-			  select * into DBA_ROHIT.dbo.diskioinfo  from #tempdiskio2--- step4
-			  drop table #tempdiskio2 --- step3
+			  select * into DBA_ROHIT.dbo.diskioinfo  from #tempdiskio2
+			  drop table #tempdiskio2 
 
 		end
 	
 	else 
 		begin
-			select * into DBA_ROHIT.dbo.diskioinfo  from #tempdiskio2 step4--- step5
-			drop table #tempdiskio2 --- step3
+			select * into DBA_ROHIT.dbo.diskioinfo  from #tempdiskio2 
+			drop table #tempdiskio2 
 		end
 END
+-------------------#rohit---------------------------------------------
