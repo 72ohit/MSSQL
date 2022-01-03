@@ -1,13 +1,11 @@
 
-
-if not exists (
+if exists (
 	 select * from DBA_ROHIT.sys.tables
 		where name = 'diskioinfo'
 	 )
 
 begin 
-----script
-	SELECT ----- step 1
+SELECT ----- step 1
 		[ReadLatency] =
 			CASE WHEN [num_of_reads] = 0
 				THEN 0 ELSE ([io_stall_read_ms] / [num_of_reads]) END,
@@ -56,7 +54,6 @@ begin
 			  @subject = 'DISKlatency_issue'  
   
 			  insert into DBA_ROHIT.dbo.diskioinfo select * from #tempdiskio --- step4
-			  insert into DBA_ROHIT.dbo.diskioinfo1 select * from #tempdiskio
 			  drop table #tempdiskio --- step3
 
 		end
@@ -64,20 +61,22 @@ begin
 	else 
 		begin
 			insert into DBA_ROHIT.dbo.diskioinfo select * from #tempdiskio --- step5
-			insert into DBA_ROHIT.dbo.diskioinfo1 select * from #tempdiskio
 			drop table #tempdiskio --- step3
 
-		
-		end
-
-
+	   end
 END
 
 ELSE
-----script
+
+
+if not exists (
+	 select * from DBA_ROHIT.sys.tables
+		where name = 'diskioinfo'
+	 )
 
 begin 
 ----script
+    
 	SELECT ----- step 1
 		[ReadLatency] =
 			CASE WHEN [num_of_reads] = 0
@@ -103,7 +102,7 @@ begin
 		DB_NAME ([vfs].[database_id]) AS [DB],
 		[mf].[physical_name]
 		--into DBA_ROHIT.dbo.diskioinfo
-		into #tempdiskio1 ----- temp data --- step2
+		into #tempdiskio2 ----- temp data --- step2
 		FROM
 		sys.dm_io_virtual_file_stats (NULL,NULL) AS [vfs]
 		JOIN sys.master_files AS [mf]
@@ -116,7 +115,7 @@ begin
 		
 --select * from #tempdiskio
 	if exists ------step3
-		( select * from #tempdiskio1 where ReadLatency > 20 or WriteLatency >20 
+		( select * from #tempdiskio2 where ReadLatency > 20 or WriteLatency >20 
 			)
 		begin
 			--email script ---- ste
@@ -126,22 +125,15 @@ begin
 			  @body = 'DISKlatency_issue',
 			  @subject = 'DISKlatency_issue'  
   
-			  --insert into DBA_ROHIT.dbo.diskioinfo select * from #tempdiskio --- step4
-			  select * into DBA_ROHIT.dbo.diskioinfo1 from #tempdiskio1
-
-			  drop table #tempdiskio1 --- step3
+			  
+			  select * into DBA_ROHIT.dbo.diskioinfo  from #tempdiskio2--- step4
+			  drop table #tempdiskio2 --- step3
 
 		end
 	
 	else 
 		begin
-			--insert into DBA_ROHIT.dbo.diskioinfo select * from #tempdiskio --- step5
-		    select * into DBA_ROHIT.dbo.diskioinfo1 from #tempdiskio1
-
-			drop table #tempdiskio1 --- step3
-
-
+			select * into DBA_ROHIT.dbo.diskioinfo  from #tempdiskio2 step4--- step5
+			drop table #tempdiskio2 --- step3
 		end
-
-
 END
