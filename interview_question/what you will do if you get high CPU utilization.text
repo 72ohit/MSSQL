@@ -1,0 +1,30 @@
+what you will do if you get high CPU utilization?
+there are multiple reasons behind the high utilization
+which are >
+blocking, deadlocking
+incorrect indexes
+indexes
+fragmentation
+statistics are not updated
+temp_db issues
+disk IO
+wait type
+incorrect Confurigation of max dop
+missing indexes
+wrong execution plan
+These are some reasons behind the high CPU utilization. we can find out only the last 256 minutes of data which is recorded high CPU utilization.
+and I can segregate this problem into two parts first is the current issue and the second is history related issue. if I get a high CPU utilization
+issue for the current situation then first I will find who is responsible for high cup utilization Executing one DMV which I have. if the SQL server
+is not responsible for the high CPU utilization then I will escalate this issue to the server team or the responsible person. And if the SQL server 
+is responsible for the high CPU utilization then I will execute select * from sys. Sysprocecces, where the session is greater than 50 and status is
+not sleeping and ordered by CPU. This will show us which SPId is taking high CPU resources then I will put that spID into the sp _who2 and dbcc input 
+buffer () this will show us who is responsible and what exactly happens in that session. Then I will find the execution plan for that SPId. Once I get
+the execution plan then I will analyze that execution plan and make a report and I will send it to the concerned person. And I will take proper action 
+on that if I get approval from the manager. 
+And if the issue is about the history related then I'll check the last 256 minutes data and in that data, I will check where the CPU goes high and
+I will take that time and put that particular time into the query which I have. This query will show us SPId which is responsible for high CPU utilization 
+for that time and then I will find the execution plan for that SPId. Once I get the execution plan I will analyze that plan and will take proper action on 
+that issue.  And if I don't get a proper solution there then I will go to check which database is responsible Once I came to know which database is responsible
+then I will find which query in that database is taking high CPU resources. Even I don't get a solution there then I will check to 20 queries that take high CPU 
+resources on the server level. Once I get a query I will find the execution plan I will analyze it and will make a report on it also I will take proper action on 
+that issue if I get approval from the authorized person. 
