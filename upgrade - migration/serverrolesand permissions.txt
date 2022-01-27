@@ -1,0 +1,38 @@
+EXEC sp_addsrvrolemember @loginame = 'sa', @rolename = 'sysadmin';
+EXEC sp_addsrvrolemember @loginame = 'DESKTOP-DSN7T3M\adnai', @rolename = 'sysadmin';
+EXEC sp_addsrvrolemember @loginame = 'NT SERVICE\SQLWriter', @rolename = 'sysadmin';
+EXEC sp_addsrvrolemember @loginame = 'NT SERVICE\Winmgmt', @rolename = 'sysadmin';
+EXEC sp_addsrvrolemember @loginame = 'NT Service\MSSQLSERVER', @rolename = 'sysadmin';
+EXEC sp_addsrvrolemember @loginame = 'NT SERVICE\SQLSERVERAGENT', @rolename = 'sysadmin';
+EXEC sp_addsrvrolemember @loginame = 'DESKTOP-DSN7T3M\sony', @rolename = 'sysadmin';
+EXEC sp_addsrvrolemember @loginame = 'distributor_admin', @rolename = 'sysadmin';
+EXEC sp_addsrvrolemember @loginame = 'userA', @rolename = 'sysadmin';
+EXEC sp_addsrvrolemember @loginame = 'userB', @rolename = 'sysadmin';
+EXEC sp_addsrvrolemember @loginame = 'dpa_m', @rolename = 'sysadmin';
+
+
+****************************************************************************
+
+
+GRANT VIEW ANY DATABASE TO [public];
+GRANT VIEW ANY DEFINITION TO [##MS_SQLResourceSigningCertificate##];
+GRANT AUTHENTICATE SERVER TO [##MS_SQLReplicationSigningCertificate##];
+GRANT VIEW ANY DEFINITION TO [##MS_SQLReplicationSigningCertificate##];
+GRANT VIEW SERVER STATE TO [##MS_SQLReplicationSigningCertificate##];
+GRANT AUTHENTICATE SERVER TO [##MS_SQLAuthenticatorCertificate##];
+GRANT CONTROL SERVER TO [##MS_PolicySigningCertificate##];
+GRANT VIEW ANY DEFINITION TO [##MS_PolicySigningCertificate##];
+GRANT VIEW ANY DEFINITION TO [##MS_SmoExtendedSigningCertificate##];
+GRANT VIEW ANY DEFINITION TO [##MS_PolicyTsqlExecutionLogin##];
+GRANT VIEW SERVER STATE TO [##MS_PolicyTsqlExecutionLogin##];
+GRANT ALTER ANY AVAILABILITY GROUP TO [NT AUTHORITY\SYSTEM];
+GRANT VIEW SERVER STATE TO [NT AUTHORITY\SYSTEM];
+GRANT ALTER ANY EVENT SESSION TO [NT SERVICE\SQLTELEMETRY];
+GRANT CONNECT ANY DATABASE TO [NT SERVICE\SQLTELEMETRY];
+GRANT VIEW ANY DEFINITION TO [NT SERVICE\SQLTELEMETRY];
+GRANT VIEW SERVER STATE TO [NT SERVICE\SQLTELEMETRY];
+GRANT VIEW SERVER STATE TO [dpa_m];
+GRANT CONNECT ON ENDPOINT::[TSQL Local Machine] TO [public];
+GRANT CONNECT ON ENDPOINT::[TSQL Named Pipes] TO [public];
+GRANT CONNECT ON ENDPOINT::[TSQL Default TCP] TO [public];
+GRANT CONNECT ON ENDPOINT::[TSQL Default VIA] TO [public];

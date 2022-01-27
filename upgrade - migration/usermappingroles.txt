@@ -1,0 +1,67 @@
+--======================================================================================
+--==== IMPORTANT: Before executing these scripts check the  details to ensure they  ====
+--==== are valid. For instance when crossing domains                                ====
+--======================================================================================
+
+/*Scripting all database users and schemas
+===================================================================================
+Note: these are the users found in the database, but they may not all be valid, check them first*/
+
+IF (SELECT name FROM sys.database_principals WHERE name = '##MS_PolicyEventProcessingLogin##') IS NULL
+BEGIN
+CREATE USER [##MS_PolicyEventProcessingLogin##] FOR LOGIN [##MS_PolicyEventProcessingLogin##] WITH DEFAULT_SCHEMA = [dbo]
+END
+
+IF (SELECT name FROM sys.database_principals WHERE name = 'DESKTOP-DSN7T3M\sony') IS NULL
+BEGIN
+CREATE USER [DESKTOP-DSN7T3M\sony] FOR LOGIN [DESKTOP-DSN7T3M\sony] WITH DEFAULT_SCHEMA = [dbo]
+END
+
+IF (SELECT name FROM sys.database_principals WHERE name = 'dpa_m') IS NULL
+BEGIN
+CREATE USER [dpa_m] FOR LOGIN [dpa_m] WITH DEFAULT_SCHEMA = [null]
+END
+
+/*Scripting all user schema permissions
+===================================================================================*/
+
+
+
+/*No database roles found*/
+
+
+/*No application roles found*/
+
+
+/*No nested roles found*/
+
+
+/*Scripting all database and connection GRANTS
+===================================================================================*/
+GRANT CONNECT TO [##MS_PolicyEventProcessingLogin##]
+GRANT CONNECT TO [##MS_AgentSigningCertificate##]
+GRANT EXECUTE TO [##MS_AgentSigningCertificate##]
+GRANT CONNECT TO [DESKTOP-DSN7T3M\sony]
+GRANT CONNECT TO [dpa_m]
+
+
+
+/*Scripting all database user object GRANTS
+===================================================================================*/
+
+GRANT SELECT ON [dbo].[spt_fallback_db] TO [public]
+GRANT SELECT ON [dbo].[spt_fallback_dev] TO [public]
+GRANT SELECT ON [dbo].[spt_fallback_usg] TO [public]
+GRANT SELECT ON [dbo].[spt_values] TO [public]
+GRANT SELECT ON [dbo].[spt_monitor] TO [public]
+
+
+/*Scripting all database user role permissions
+===================================================================================*/
+EXEC sp_addrolemember 'db_owner', 'DESKTOP-DSN7T3M\sony'
+
+
+
+--Finished!
+
+Completion time: 2022-01-27T19:14:05.9261473+05:30
