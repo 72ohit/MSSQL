@@ -1,0 +1,6 @@
+Hello Binny - Go ahead, There are no issues with taking full back-up of the database
+which is also configured for Log-Shipping. At the end of the full database back-up, 
+the log-chain is affected (Resets the log-chain) which is accounted for in the next T-Log back-up automatically.
+
+Just be sure that you are NOT taking the T-Log back-up (Manually or by Maitenance Plan) as Log-shipping job
+will have no idea about it and your subsequent restore operations on the secondary Instance would start failing due to missing T-Log back-up.     
