@@ -1,0 +1,74 @@
+---- fragmentaion 
+
+
+
+--rebuild
+select * from sys.dm_db_index_physical_stats(35,null, null , null,null) where avg_fragmentation_in_percent > 30 and database_id >5
+--reorgnize
+select * from sys.dm_db_index_physical_stats(null,null, null , null,null) where avg_fragmentation_in_percent >5 and avg_fragmentation_in_percent <30  and database_id >5
+
+
+
+select * from sys.databases 
+select * from sys.tables
+select * from sys.objects where object_id = 37223533
+select * from sys.indexes where object_id = 37223533
+
+select * from sys.dm_db_index_physical_stats(35, null, null , null,null) 
+dbcc show_statistics (REPORTMASTER_MST, PK_REPORTMASTER_MST ) 
+
+
+--index rebuild on table level
+alter index all on REPORTMASTER_MST
+rebuild
+
+
+---database level
+
+exec sp_msforeachtable 'SET QUOTED_IDENTIFIER ON; alter index all on ? 
+rebuild'
+go 
+
+exec sp_msforeachtable 'SET QUOTED_IDENTIFIER ON; alter index all on ? 
+reorganize'
+go 
+
+
+-----------------------rebuild--------------------------------------------
+SELECT S.name as 'Schema',
+T.name as 'Table',
+I.name as 'Index',
+DDIPS.avg_fragmentation_in_percent,
+DDIPS.page_count
+FROM sys.dm_db_index_physical_stats (DB_ID(), NULL, NULL, NULL, NULL) AS DDIPS
+INNER JOIN sys.tables T on T.object_id = DDIPS.object_id
+INNER JOIN sys.schemas S on T.schema_id = S.schema_id
+INNER JOIN sys.indexes I ON I.object_id = DDIPS.object_id
+AND DDIPS.index_id = I.index_id
+WHERE DDIPS.database_id = DB_ID()
+and I.name is not null
+AND DDIPS.avg_fragmentation_in_percent > 0 and page_count > 1000
+ORDER BY DDIPS.avg_fragmentation_in_percent desc
+
+---------------------------------reorgnize-----------------------
+SELECT S.name as 'Schema',
+T.name as 'Table',
+I.name as 'Index',
+DDIPS.avg_fragmentation_in_percent,
+DDIPS.page_count
+FROM sys.dm_db_index_physical_stats (DB_ID(), NULL, NULL, NULL, NULL) AS DDIPS
+INNER JOIN sys.tables T on T.object_id = DDIPS.object_id
+INNER JOIN sys.schemas S on T.schema_id = S.schema_id
+INNER JOIN sys.indexes I ON I.object_id = DDIPS.object_id
+AND DDIPS.index_id = I.index_id
+WHERE DDIPS.database_id = DB_ID()
+and I.name is not null
+AND DDIPS.avg_fragmentation_in_percent > 5 and DDIPS.avg_fragmentation_in_percent < 30 and page_count > 1000
+ORDER BY DDIPS.avg_fragmentation_in_percent desc
+
+
+alter index all on PAGEROLEACCESS_MST
+reorganize
+
+
+
